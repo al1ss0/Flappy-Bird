@@ -7,21 +7,27 @@ branco = (255,255,255)
 vermelho = (255,0, 0)
 preto = (0,0,0)
 running = True
-direita = True
-velocidade = 1
 posicaoXBolinha = 0
-posicaoYBolinha = 300
+posicaoYBolinha= 300
+velocidadeBolinha = 1
 posicaoXBolinhaV = 400
 movimentoBolinhaVX = 0
 movimentoBolinhaVY = 0
 posicaoYBolinhaV = 300
+direita = True
 clock = pygame.time.Clock()
 tela =  pygame.display.set_mode( tamanho )
-pygame.display.set_caption("FlappyBird")
+pygame.display.set_caption("FlappyBird do Marcão")
 flappy = pygame.image.load("flappybird.png")
+pac = pygame.image.load("pac.png")
+pacOriginal = pygame.image.load("pac.png")
 flappyOriginal = pygame.image.load("flappybird.png")
 pygame.display.set_icon(flappy)
-fundo = pygame.image.load("background.jpg")
+fundo = pygame.image.load("fundo.jpg")
+pygame.mixer.music.load("trilha.mp3")
+pygame.mixer.music.play(-1)
+pacSound = pygame.mixer.Sound("pac.mp3")
+pygame.mixer.Sound.play(pacSound)
 while running:
     for evento in pygame.event.get():
         if evento.type == pygame.QUIT:
@@ -40,32 +46,37 @@ while running:
             movimentoBolinhaVX = 0
         elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_UP:
             movimentoBolinhaVY = -5
+
         elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_DOWN:
             movimentoBolinhaVY = 5
         elif evento.type == pygame.KEYUP and evento.key == pygame.K_UP:
             movimentoBolinhaVY = 0
         elif evento.type == pygame.KEYUP and evento.key == pygame.K_DOWN:
             movimentoBolinhaVY = 0
-
-
+            
     tela.fill(branco)
     tela.blit(fundo, (0,0))
-    pygame.draw.circle(tela,preto,(posicaoXBolinha,posicaoYBolinha),30)
+    tela.blit(pac, (posicaoXBolinha,posicaoYBolinha))
+    #pygame.draw.circle(tela,preto,(posicaoXBolinha,posicaoYBolinha),30)
 
     if posicaoXBolinha >= 800:
         direita = False
-        velocidade = velocidade + 1
+        velocidadeBolinha = velocidadeBolinha + 1
+        pygame.mixer.Sound.play(pacSound)
         posicaoYBolinha = random.randint(0,600)
+        pac = pygame.transform.flip(pac, True,False)
         #winsound.Beep(500,300)
     elif posicaoXBolinha <= 0:
         direita = True
-        velocidade = velocidade + 1
+        pac = pacOriginal
+        pygame.mixer.Sound.play(pacSound)
+        velocidadeBolinha = velocidadeBolinha + 1
         #winsound.Beep(500,300)
 
     if direita :
-        posicaoXBolinha = posicaoXBolinha + velocidade
+        posicaoXBolinha = posicaoXBolinha + velocidadeBolinha
     else:
-        posicaoXBolinha = posicaoXBolinha - velocidade
+        posicaoXBolinha = posicaoXBolinha - velocidadeBolinha
     
     
     if posicaoXBolinhaV < 0:
@@ -84,6 +95,18 @@ while running:
     
     #pygame.draw.circle(tela, vermelho, (posicaoXBolinhaV,posicaoYBolinhaV) , 30 )
     tela.blit(flappy, (posicaoXBolinhaV,posicaoYBolinhaV))
+
+    pixelXFlappy = list(range(posicaoXBolinhaV, posicaoXBolinhaV+100))
+    pixelYFlappy = list(range(posicaoYBolinhaV, posicaoYBolinhaV+56))
+    pixelXPac = list(range(posicaoXBolinha, posicaoXBolinha+100))
+    pixelYPac = list(range(posicaoYBolinha, posicaoYBolinha+117))
+
+    totalPixelAltura = len(list(set(pixelYFlappy) & set(pixelYPac) ))
+    totalPixelLargura = len(list(set(pixelXFlappy) & set(pixelXPac) ))
+    
+    if totalPixelAltura > 12: 
+        if totalPixelLargura> 28: 
+            running =False
 
     pygame.display.update()
     clock.tick(60)
