@@ -16,7 +16,7 @@ pygame.display.set_icon(flappy)
 fundo = pygame.image.load("background.jpg")
 running = True
 posicaoxBolinha = 0
-posicaoyBolinha = 300
+posicaoyBolinha = 300 
 velocidade = 1
 posicaoxBolinhaV = 400
 posicaoyBolinhaV = 300
@@ -30,8 +30,10 @@ while running:
             running = False
         elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_LEFT: #Faz a bolinha ir pra esquerda
             movimentobolinhaVX = -5
+            flappy= flappyoriginal
         elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_RIGHT: # Faz a bolinha ir pra direita
             movimentobolinhaVX = 5
+            flappy = pygame.transform.flip(flappy, True,False)
         elif evento.type == pygame.KEYUP and evento.key == pygame.K_LEFT:
             movimentobolinhaVX = 0
         elif evento.type == pygame.KEYUP and evento.key == pygame.K_RIGHT:
