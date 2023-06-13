@@ -4,78 +4,87 @@ import random
 pygame.init()
 tamanho = (800,600)
 branco = (255,255,255)
+vermelho = (255,0, 0)
 preto = (0,0,0)
-vermelho = (255,0,0)
+running = True
 direita = True
+velocidade = 1
+posicaoXBolinha = 0
+posicaoYBolinha = 300
+posicaoXBolinhaV = 400
+movimentoBolinhaVX = 0
+movimentoBolinhaVY = 0
+posicaoYBolinhaV = 300
 clock = pygame.time.Clock()
-tela = pygame.display.set_mode(tamanho)
-pygame.display.set_caption('FlappyBird')
+tela =  pygame.display.set_mode( tamanho )
+pygame.display.set_caption("FlappyBird")
 flappy = pygame.image.load("flappybird.png")
-flappyoriginal = pygame.image.load("flappybird.png")
+flappyOriginal = pygame.image.load("flappybird.png")
 pygame.display.set_icon(flappy)
 fundo = pygame.image.load("background.jpg")
-running = True
-posicaoxBolinha = 0
-posicaoyBolinha = 300 
-velocidade = 1
-posicaoxBolinhaV = 400
-posicaoyBolinhaV = 300
-movimentobolinhaVX = 0
-movimentobolinhaVY = 0
 while running:
     for evento in pygame.event.get():
-        if evento.type == pygame.QUIT: #Comandos
+        if evento.type == pygame.QUIT:
             running = False
-        elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_ESCAPE:  #Faz o jogo fechar com o ESC
+        elif evento.type == pygame.KEYDOWN and evento.key== pygame.K_ESCAPE:
             running = False
-        elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_LEFT: #Faz a bolinha ir pra esquerda
-            movimentobolinhaVX = -5
-            flappy= flappyoriginal
-        elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_RIGHT: # Faz a bolinha ir pra direita
-            movimentobolinhaVX = 5
+        elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_LEFT:
+            movimentoBolinhaVX = -5
+            flappy = flappyOriginal
+        elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_RIGHT:
+            movimentoBolinhaVX = 5
             flappy = pygame.transform.flip(flappy, True,False)
         elif evento.type == pygame.KEYUP and evento.key == pygame.K_LEFT:
-            movimentobolinhaVX = 0
+            movimentoBolinhaVX = 0
         elif evento.type == pygame.KEYUP and evento.key == pygame.K_RIGHT:
-            movimentobolinhaVY = 0
+            movimentoBolinhaVX = 0
         elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_UP:
-            movimentobolinhaVY = -5
+            movimentoBolinhaVY = -5
         elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_DOWN:
-            movimentobolinhaVY = 5
+            movimentoBolinhaVY = 5
         elif evento.type == pygame.KEYUP and evento.key == pygame.K_UP:
-            movimentobolinhaVY = 0
+            movimentoBolinhaVY = 0
         elif evento.type == pygame.KEYUP and evento.key == pygame.K_DOWN:
-            movimentobolinhaVY = 0
+            movimentoBolinhaVY = 0
+
+
     tela.fill(branco)
-    tela.blit(fundo,(0,0))
-    if posicaoxBolinha >= 800:
-        direita =  False
+    tela.blit(fundo, (0,0))
+    pygame.draw.circle(tela,preto,(posicaoXBolinha,posicaoYBolinha),30)
+
+    if posicaoXBolinha >= 800:
+        direita = False
         velocidade = velocidade + 1
-        posicaoyBolinha = random.randint(0,600)
-    elif posicaoxBolinha <= 0:
+        posicaoYBolinha = random.randint(0,600)
+        #winsound.Beep(500,300)
+    elif posicaoXBolinha <= 0:
         direita = True
         velocidade = velocidade + 1
+        #winsound.Beep(500,300)
 
-    if direita:
-        posicaoxBolinha = posicaoxBolinha + velocidade
+    if direita :
+        posicaoXBolinha = posicaoXBolinha + velocidade
     else:
-        posicaoxBolinha = posicaoxBolinha - velocidade
+        posicaoXBolinha = posicaoXBolinha - velocidade
     
-    if posicaoxBolinhaV < 0:
-        posicaoxBolinhaV = 0
-    elif posicaoxBolinhaV > 700:
-        posicaoxBolinhaV = 700
+    
+    if posicaoXBolinhaV < 0:
+        posicaoXBolinhaV = 0
+    elif posicaoXBolinhaV > 700:
+        posicaoXBolinhaV = 700
     else:
-        posicaoxBolinhaV = posicaoxBolinhaV + movimentobolinhaVX
+        posicaoXBolinhaV = posicaoXBolinhaV + movimentoBolinhaVX
 
-    if posicaoyBolinhaV < 0:
-        posicaoyBolinhaV = 0
-    elif posicaoyBolinhaV > 550:
-        posicaoyBolinhaV = 550
+    if posicaoYBolinhaV < 0:
+        posicaoYBolinhaV = 0
+    elif posicaoYBolinhaV > 550:
+        posicaoYBolinhaV = 550
     else:
-        posicaoyBolinhaV = posicaoyBolinhaV + movimentobolinhaVY
+        posicaoYBolinhaV = posicaoYBolinhaV + movimentoBolinhaVY
     
-    tela.blit(flappy,(posicaoxBolinhaV,posicaoyBolinhaV))
+    #pygame.draw.circle(tela, vermelho, (posicaoXBolinhaV,posicaoYBolinhaV) , 30 )
+    tela.blit(flappy, (posicaoXBolinhaV,posicaoYBolinhaV))
+
     pygame.display.update()
     clock.tick(60)
 pygame.quit()
